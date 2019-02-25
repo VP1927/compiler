@@ -81,8 +81,8 @@ Token* readNumber(void) {
     readChar();
   }
   token->string[counter] == '\0';
-  readChar();
-  if (charCodes[currentChar] != CHAR_SPACE) error(ERR_INVALIDSYMBOL,ln,cn); 
+  // readChar();
+  // if (charCodes[currentChar] != CHAR_SPACE) error(ERR_INVALIDSYMBOL,ln,cn); 
   return token;
 
 }
@@ -90,18 +90,20 @@ Token* readNumber(void) {
 Token* readConstChar(void) {
   Token *token;
   int counter = 0,ln,cn;
+
+  readChar();
   ln = lineNo;
   cn = colNo;
   token = makeToken(TK_CHAR,ln,cn);
-  readChar();
 
   while ((currentChar!= EOF) && (charCodes[currentChar] != CHAR_SINGLEQUOTE)) {
     token->string[counter++] = (char)currentChar;
     readChar();
-    if (counter>1) break;
+    if (counter>2) error(ERR_INVALIDCHARCONSTANT,ln,cn);
   }  
   token->string[counter] = '\0';
-  if (token->string[2] != '\'') error(ERR_INVALIDCHARCONSTANT,ln,cn);
+  if (counter == 2)
+    if (token->string[0] != '\'') error(ERR_INVALIDCHARCONSTANT,ln,cn);
   if (currentChar == EOF) error(ERR_INVALIDCHARCONSTANT,ln,cn);
   readChar();
   return token;
@@ -242,7 +244,7 @@ void printToken(Token *token) {
 
   case KW_PROGRAM: printf("KW_PROGRAM\n"); break;
   case KW_CONST: printf("KW_CONST\n"); break;
-  case KW_TYPE: printf("KW_TYPE\n"); break;
+  case KW_TYPE: printf("KW_TYPE\n"); break; 
   case KW_VAR: printf("KW_VAR\n"); break;
   case KW_INTEGER: printf("KW_INTEGER\n"); break;
   case KW_CHAR: printf("KW_CHAR\n"); break;
