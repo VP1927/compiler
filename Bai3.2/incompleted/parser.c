@@ -280,17 +280,24 @@ void compileStatements2(void) {
     compileStatement();
     compileStatements2();
   }
+  if ((lookAhead->tokenType == TK_IDENT)
+      ||(lookAhead->tokenType == KW_CALL)
+      ||(lookAhead->tokenType == KW_BEGIN)
+      ||(lookAhead->tokenType == KW_IF)
+      ||(lookAhead->tokenType == KW_WHILE)
+      ||(lookAhead->tokenType == KW_FOR) ){
+    eat(SB_SEMICOLON); //for identical with the test
+    // error(ERR_INVALIDSTATEMENT,lookAhead->lineNo,lookAhead->colNo);  //what suppost to be?
+  }
 }
 
 void compileStatement(void) {
   switch (lookAhead->tokenType) {
   case TK_IDENT:
     compileAssignSt();
-    if (lookAhead->tokenType == TK_IDENT) eat(SB_SEMICOLON);
     break;
   case KW_CALL:
     compileCallSt();
-    if (lookAhead->tokenType == KW_CALL) eat(SB_SEMICOLON);
     break;
   case KW_BEGIN:
     compileGroupSt();
