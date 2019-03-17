@@ -185,15 +185,19 @@ void compileConstant(void) {
   if (lookAhead->tokenType == TK_CHAR) eat(TK_CHAR);
   else {
     if (lookAhead->tokenType == SB_PLUS) eat(SB_PLUS);
-    else 
+    else {
       if (lookAhead->tokenType == SB_MINUS) eat(SB_MINUS);
-      else error(ERR_INVALIDCONSTANT,lookAhead->lineNo,lookAhead->colNo);
+      else {
+        if ((lookAhead->tokenType != TK_IDENT) && (lookAhead->tokenType != TK_NUMBER)) error(ERR_INVALIDCONSTANT,lookAhead->lineNo,lookAhead->colNo);
+      }
+    }
     compileConstant2();
   }
 
 }
 
 void compileConstant2(void) {
+
   if (lookAhead->tokenType == TK_IDENT) eat(TK_IDENT);
   else {
     if (lookAhead->tokenType == TK_NUMBER) eat(TK_NUMBER);
